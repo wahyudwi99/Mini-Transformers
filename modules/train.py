@@ -3,6 +3,8 @@ import torch.nn as nn
 import modules.transformers as transformers
 import modules.dataset as dataset
 import modules.metrics as metrics
+import modules.logging as logging
+from tqdm import tqdm
 
 
 # Check GPU availability
@@ -13,10 +15,10 @@ else:
 
 # Define core model
 model = transformers.MiniTransformers(
-    d_model=2048,
-    num_heads=8,
-    ffn_hidden=1024,
-    vocab_size=267723,
+    d_model=256,
+    num_heads=2,
+    ffn_hidden=512,
+    vocab_size=30003,
     total_blocks=1
 )
 model = model.to(device)
@@ -26,7 +28,9 @@ loss_fn = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
 # Load training and testing dataset
-training_data, testing_data = dataset.dataset_preparation(batch_size=256)
+training_data, testing_data, vocab_json = dataset.dataset_preparation(batch_size=512)
+
+reversed_vocab = {v: k for k, v in vocab_json.items()}
 
 
 def train(epoch: int):
@@ -35,7 +39,7 @@ def train(epoch: int):
         model.train()
         train_acc = 0
         train_loss = 0
-        for x_batch, y_batch in training_data:
+        for x_batch, y_batch in tqdm(training_data):
             x_batch = x_batch.to(device)
             y_batch = y_batch.to(device)
 
@@ -91,3 +95,26 @@ def train(epoch: int):
             test_loss = test_loss / len(testing_data)
 
         print(f"EPOCH {ep+1} ==> Loss training = {train_loss} | Accuracy training = {train_acc} | Loss testing = {test_loss} | Accuracy testing = {test_acc}")
+        
+
+        ground_truth_string, prediction_string = dataset.decode_vocab(
+            prediction.detach(),
+            y_batch.detach(),
+            reversed_vocab
+        )
+
+        # Insert log
+        logging.log_metrics_results(
+            epoch,
+            train_acc,
+            train_loss,
+            test_acc,
+            test_loss,
+            prediction_string,
+            ground_truth_string
+        )
+
+
+
+if __name__ == "__main__":
+    train(2)

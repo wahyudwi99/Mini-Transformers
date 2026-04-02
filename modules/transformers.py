@@ -1,6 +1,6 @@
 import torch.nn as nn
 from modules.models import MultiHeadAttention, FeedForward
-from modules.tokenization import TokenEmbedding, PositionalEncoding
+from modules.models import TokenEmbedding, PositionalEncoding
 
 
 class TransformersBlock(nn.Module):
