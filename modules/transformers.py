@@ -10,9 +10,9 @@ class TransformersBlock(nn.Module):
     Result:
         Transformers Block architecture
     """
-    def __init__(self, d_model, num_heads, ffn_hidden, vocab_size):
+    def __init__(self, d_model, num_heads, ffn_hidden, device):
         super().__init__()
-        self.attn = MultiHeadAttention(d_model, num_heads)
+        self.attn = MultiHeadAttention(d_model, num_heads, device)
         self.ffn = FeedForward(d_model, ffn_hidden)
         self.norm1 = nn.LayerNorm(d_model)
         self.norm2 = nn.LayerNorm(d_model)
@@ -27,7 +27,7 @@ class TransformersBlock(nn.Module):
         return x
     
 class MiniTransformers(nn.Module):
-    def __init__(self, d_model, num_heads, ffn_hidden, vocab_size, total_blocks):
+    def __init__(self, d_model, num_heads, ffn_hidden, vocab_size, total_blocks, device):
         super().__init__()
         self.embedding = TokenEmbedding(vocab_size, d_model)
         self.stacked_transformers = nn.ModuleList(
@@ -35,7 +35,7 @@ class MiniTransformers(nn.Module):
                 d_model,
                 num_heads,
                 ffn_hidden,
-                vocab_size
+                device
             ) for _ in range(total_blocks)
         )
 

@@ -90,7 +90,7 @@ class MultiHeadAttention(nn.Module):
     
 
     """
-    def __init__(self, d_model, num_heads):
+    def __init__(self, d_model, num_heads, device):
         super().__init__()
         # Define variables
         self.num_heads = num_heads
@@ -99,6 +99,7 @@ class MultiHeadAttention(nn.Module):
         self.k_proj = nn.Linear(d_model, self.head_dim)
         self.v_proj = nn.Linear(d_model, self.head_dim)
         self.out_proj = nn.Linear(d_model, d_model)
+        self.device = device
 
     
     def scaled_dot_product_attention(self, Q, K, V):
@@ -133,6 +134,7 @@ class MultiHeadAttention(nn.Module):
             masking_matrix.size()[0],
             masking_matrix.size()[1]
         )
+        masking_matrix = masking_matrix.to(self.device)
 
         # Adding attention score matrix with casual masking matrix
         final_score = torch.add(scores, masking_matrix)

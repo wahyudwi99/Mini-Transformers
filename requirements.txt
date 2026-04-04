@@ -1,4 +1,7 @@
---extra-index-url https://download.pytorch.org/whl/cu121
-
-datasets>=3.0.0
+--index-url https://download.pytorch.org/whl/cu124
 torch
+torchvision
+datasets>=3.0.0
+tqdm==4.67.3
+safetensors==0.7.0
+matplotlib
