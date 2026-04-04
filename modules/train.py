@@ -145,20 +145,20 @@ class Trainer():
                 "ground_truth": ground_truth_string
             }
             self._logger.save_metrics(logs_data)
-            if (epoch+1) % 10 == 0 and epoch+1 > 0:
+            if (epoch+1) % 5 == 0 and epoch+1 > 0:
                 self._logger.save_checkpoint(self.model.state_dict(), epoch+1)
                 visualization.plot_training_results(self._logger.session_dir / "metrics.jsonl")
 
 
 if __name__ == "__main__":
     trainer = Trainer(
-        d_model=128,
+        d_model=512,
         num_heads=2,
-        ffn_hidden=256,
-        transformers_blocks=1,
+        ffn_hidden=1024,
+        transformers_blocks=2,
         seq_length=256,
-        batch_size=62,
+        batch_size=64,
         vocab_size=30000
     )
 
-    trainer.pipeline(total_epochs=20)
+    trainer.pipeline(total_epochs=30)
