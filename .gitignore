@@ -3,3 +3,7 @@ playground.ipynb
 *.pt
 *.json
 *.pyc
+*.safetensors
+*.jsonl
+*.DS_Store
+*.png

@@ -73,7 +73,7 @@ class Trainer():
             self.optimizer.step()
 
             # Calculate metrics
-            accuracy_train = metrics.calculate_accuracy(
+            accuracy_train = metrics.Metrics.calculate_accuracy(
                 prediction.detach().cpu(),
                 y_batch.detach().cpu()
             )
@@ -105,7 +105,7 @@ class Trainer():
                 test_loss += loss_testing.item()
             
                 # Calculate metrics
-                accuracy_test = metrics.calculate_accuracy(
+                accuracy_test = metrics.Metrics.calculate_accuracy(
                     prediction.detach().cpu(),
                     y_batch.detach().cpu()
                 )
